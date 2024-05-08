@@ -90,12 +90,12 @@ module load cuda/12.1
 module load gcc/12.2.0-cuda-12.1
 module load python/3.10.8--gcc--11.3.0
 
-source $HOME/workspace/Topology-Graph-Collaborative-Filtering/venv310/bin/activate
+source $HOME/graph_topology/Topology-Graph-Collaborative-Filtering/venv310/bin/activate
 
 export LANG="en_US.utf8"
 export LANGUAGE="en_US:en"
 
-cd $HOME/workspace/Topology-Graph-Collaborative-Filtering
+cd $HOME/graph_topology/Topology-Graph-Collaborative-Filtering
 
 echo "Run experiments"
 """
