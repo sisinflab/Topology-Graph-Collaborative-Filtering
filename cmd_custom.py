@@ -75,8 +75,8 @@ def main():
 #SBATCH --time=24:00:00                                   ## format: HH:MM:SS
 #SBATCH --nodes=1
 #SBATCH --mem=20GB                                       ## memory per node out of 494000MB (481GB)
-#SBATCH --output=$HOME/slogs/SisInf_Topology_output-%A_%a.out
-#SBATCH --error=$HOME/slogs/SisInf_Topology_error-%A_%a.err
+#SBATCH --output=$HOME/graph_topology/slogs/SisInf_Topology_output-%A_%a.out
+#SBATCH --error=$HOME/graph_topology/slogs/SisInf_Topology_error-%A_%a.err
 #SBATCH --account={1}
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user={2}
