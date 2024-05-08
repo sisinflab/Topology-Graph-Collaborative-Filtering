@@ -1,51 +1,44 @@
 import numpy as np
 import random
-from operator import itemgetter
+import torch
+import torch.utils.data as data
 
 
 class Sampler:
-    def __init__(self, indexed_ratings, seed=42):
+    def __init__(self, edge_index, num_items, interacted_items, negative_num, batch_size, sampling_sift_pos, seed=42):
         np.random.seed(seed)
         random.seed(seed)
-        self._indexed_ratings = indexed_ratings
-        self._users = list(self._indexed_ratings.keys())
-        self._nusers = len(self._users)
-        self._items = list({k for a in self._indexed_ratings.values() for k in a.keys()})
-        self._nitems = len(self._items)
-        self._ui_dict = {u: list(set(indexed_ratings[u])) for u in indexed_ratings}
-        self._lui_dict = {u: len(v) for u, v in self._ui_dict.items()}
-        self._probs = {u: self.get_probs(v) for u, v in self._ui_dict.items()}
-        
-    def get_probs(self, ui):
-        probs = np.ones(self._nitems)
-        probs[ui] = 0
-        probs /= np.sum(probs)
-        return probs
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+        self.num_items = num_items
+        self.negative_num = negative_num
+        self.sampling_sift_pos = sampling_sift_pos
+        self.interacted_items = interacted_items
+        self.train_loader = data.DataLoader(
+            dataset=edge_index,
+            batch_size=batch_size,
+            shuffle=True
+        )
 
-    def step(self, events: int, batch_size: int):
-        r_int = np.random.randint
-        n_items = self._nitems
-        ui_dict = self._ui_dict
-        lui_dict = self._lui_dict
-        probs = self._probs
+    def step(self, pos_train_data):
+        neg_candidates = np.arange(self.num_items)
 
-        def sample(bs):
-            users = random.sample(self._users, bs)
-            pos_items = []
-            all_probs = list(itemgetter(*users)(probs))
-            for u in users:
-                ui = ui_dict[u]
-                lui = lui_dict[u]
-                if lui == n_items:
-                    sample(bs)
-                i = ui[r_int(lui)]
+        if self.sampling_sift_pos:
+            neg_items = []
+            for u in pos_train_data[0]:
+                probs = np.ones(self.num_items)
+                probs[self.interacted_items[u]] = 0
+                probs /= np.sum(probs)
 
-                pos_items.append(i)
-            return users, pos_items, all_probs
+                u_neg_items = np.random.choice(neg_candidates, size=self.negative_num, p=probs, replace=True).reshape(1, -1)
 
-        for batch_start in range(0, events, batch_size):
-            batch_stop = min(batch_start + batch_size, events)
-            current_batch_size = batch_stop - batch_start
-            bui, bii, ps = sample(current_batch_size)
-            batch = np.array([bui, bii])
-            yield batch, ps
+                neg_items.append(u_neg_items)
+
+            neg_items = np.concatenate(neg_items, axis=0)
+        else:
+            neg_items = np.random.choice(neg_candidates, (len(pos_train_data[0]), self.negative_num), replace=True)
+
+        neg_items = torch.from_numpy(neg_items)
+
+        return pos_train_data[0].long(), pos_train_data[1].long(), neg_items.long()  # users, pos_items, neg_items

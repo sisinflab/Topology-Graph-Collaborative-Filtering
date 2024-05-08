@@ -2,14 +2,15 @@ from tqdm import tqdm
 import os
 
 from elliot.utils.write import store_recommendation
-from .custom_sampler_batch import Sampler
-from .sampling import *
+from .custom_sampler import Sampler
 from elliot.recommender import BaseRecommenderModel
 from elliot.recommender.base_recommender_model import init_charger
 from elliot.recommender.recommender_utils_mixin import RecMixin
 from .UltraGCNModel import UltraGCNModel
 
 import math
+import torch
+import numpy as np
 
 
 class UltraGCN(RecMixin, BaseRecommenderModel):
@@ -25,11 +26,6 @@ class UltraGCN(RecMixin, BaseRecommenderModel):
 
     @init_charger
     def __init__(self, data, config, params, *args, **kwargs):
-
-        self._sampler = Sampler(self._data.i_train_dict)
-        if self._batch_size < 1:
-            self._batch_size = self._num_users
-
         ######################################
 
         self._params_list = [
@@ -41,15 +37,30 @@ class UltraGCN(RecMixin, BaseRecommenderModel):
             ("_w4", "w4", "w4", 1, float, None),
             ("_ii_n_n", "ii_n_n", "ii_n_n", 10, int, None),
             ("_i_w", "i_w", "i_w", 1e-3, float, None),
-            ("_n_n_w", "n_n_w", "n_n_w", 200, int, None),
+            ("_n_n", "n_n", "n_n", 200, int, None),
+            ("_n_w", "n_w", "n_w", 200, int, None),
             ("_g", "g", "g", 1e-4, float, None),
             ("_l", "l", "l", 2.75, float, None),
             ("_s_s_p", "s_s_p", "s_s_p", False, bool, None)
         ]
         self.autoset_params()
 
-        self._n_n = self._n_n_w
-        self._n_w = float(self._n_n_w)
+        row, col = data.sp_i_train.nonzero()
+        edge_index = list(zip(row, col))
+
+        interacted_items = [[] for _ in range(self._num_users)]
+        for (u, i) in edge_index:
+            interacted_items[u].append(i)
+
+        self._sampler = Sampler(edge_index=edge_index,
+                                num_items=self._num_items,
+                                batch_size=self._batch_size,
+                                negative_num=self._n_n,
+                                sampling_sift_pos=self._s_s_p,
+                                interacted_items=interacted_items,
+                                seed=self._seed)
+        if self._batch_size < 1:
+            self._batch_size = self._num_users
 
         ii_neighbor_mat, ii_constraint_mat = self.get_ii_constraint_mat(data.sp_i_train, self._ii_n_n)
 
@@ -115,20 +126,16 @@ class UltraGCN(RecMixin, BaseRecommenderModel):
         if self._restore:
             return self.restore_weights()
 
-        self._params.best_iteration = 1
-
         for it in self.iterate(self._epochs):
             loss = 0
             steps = 0
-            with tqdm(total=int(self._data.transactions // self._batch_size), disable=not self._verbose) as t:
-                for batch, probs in self._sampler.step(self._data.transactions, self._batch_size):
+            n_batch = int(self._data.transactions / self._batch_size) if self._data.transactions % self._batch_size == 0 else int(self._data.transactions / self._batch_size) + 1
+            with tqdm(total=n_batch, disable=not self._verbose) as t:
+                for x in self._sampler.train_loader:
                     steps += 1
-                    current_batch_size = batch[0].shape[0]
-                    neg_items = sampling(current_batch_size, probs, self._num_items, self._n_n,
-                                         self._s_s_p)
-                    users, pos_items = batch
-                    loss += self._model.train_step((torch.from_numpy(users),
-                                                    torch.from_numpy(pos_items),
+                    users, pos_items, neg_items = self._sampler.step(x)
+                    loss += self._model.train_step((users,
+                                                    pos_items,
                                                     neg_items))
 
                     if math.isnan(loss) or math.isinf(loss) or (not loss):
@@ -137,7 +144,11 @@ class UltraGCN(RecMixin, BaseRecommenderModel):
                     t.set_postfix({'loss': f'{loss / steps:.5f}'})
                     t.update()
 
-            self.evaluate(it, loss / (it + 1))
+            need_test = True
+            if it < 50 and it % 5 != 0:
+                need_test = False
+            if need_test:
+                self.evaluate(it, loss / (it + 1))
 
     def get_recommendations(self, k: int = 100):
         predictions_top_k_test = {}
