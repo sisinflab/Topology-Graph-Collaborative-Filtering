@@ -5,8 +5,8 @@ train_filename = 'train.txt'
 test_filename = 'test.txt'
 
 if dataset == 'yelp-2018':
-    train = pd.read_csv('./data/{0}/{1}'.format(dataset, train_filename), sep=',')
-    test = pd.read_csv('./data/{0}/{1}'.format(dataset, test_filename), sep=',')
+    train = pd.read_csv('./data/{0}/{1}'.format(dataset, train_filename), sep=',', header=[0, 1])
+    test = pd.read_csv('./data/{0}/{1}'.format(dataset, test_filename), sep=',', header=[0, 1])
 else:
     rows, cols = [], []
 
