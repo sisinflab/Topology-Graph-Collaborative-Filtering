@@ -7,6 +7,8 @@ test_filename = 'test_sparse.csv'
 if dataset == 'yelp-2018':
     train = pd.read_csv('./data/{0}/{1}'.format(dataset, train_filename), sep=',', header=[0, 1])
     test = pd.read_csv('./data/{0}/{1}'.format(dataset, test_filename), sep=',', header=[0, 1])
+    train.columns = [0, 1]
+    test.columns = [0, 1]
 else:
     rows, cols = [], []
 
