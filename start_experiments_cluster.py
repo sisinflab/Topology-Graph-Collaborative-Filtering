@@ -1,6 +1,5 @@
 from elliot.run import run_experiment
 import argparse
-import pandas as pd
 
 parser = argparse.ArgumentParser(description="Run sample main.")
 parser.add_argument('--dataset', type=str, default='gowalla')

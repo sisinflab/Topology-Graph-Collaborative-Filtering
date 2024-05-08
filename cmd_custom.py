@@ -8,7 +8,7 @@ import datetime
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Baby', help='choose the dataset')
+parser.add_argument('--dataset', type=str, default='gowalla', help='choose the dataset')
 parser.add_argument('--gpu_id', type=int, default=0, help='choose the gpu id')
 parser.add_argument('--batch_size_jobs', type=int, default=5, help='batch size for jobs')
 parser.add_argument('--cluster', type=str, default='cineca', help='cluster name')
@@ -109,7 +109,7 @@ echo "Run experiments"
     if header:
         for index, offset in enumerate(range(0, nb_jobs, args.batch_size_jobs), 1):
             offset_stop = min(offset + args.batch_size_jobs, nb_jobs)
-            with open(scripts_path + f'/{args.dataset}/{args.model}/' + date_time + f'__{index}.sh', 'w') as f:
+            with open(scripts_path + f'/{args.dataset}/' + date_time + f'__{index}.sh', 'w') as f:
                 print(header.format(offset_stop - offset), file=f)
                 current_command_lines = sorted_command_lines[offset: offset_stop]
                 for job_id, command_line in enumerate(current_command_lines, 1):
