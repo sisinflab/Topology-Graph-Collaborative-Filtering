@@ -1,8 +1,8 @@
 import pandas as pd
 
 dataset = 'yelp-2018'
-train_filename = 'train.txt'
-test_filename = 'test.txt'
+train_filename = 'train_sparse.csv'
+test_filename = 'test_sparse.csv'
 
 if dataset == 'yelp-2018':
     train = pd.read_csv('./data/{0}/{1}'.format(dataset, train_filename), sep=',', header=[0, 1])
