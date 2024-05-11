@@ -75,8 +75,8 @@ def main():
 #SBATCH --time=24:00:00                                   ## format: HH:MM:SS
 #SBATCH --nodes=1
 #SBATCH --mem=20GB                                       ## memory per node out of 494000MB (481GB)
-#SBATCH --output=$HOME/graph_topology/slogs/SisInf_Topology_output-%A_%a.out
-#SBATCH --error=$HOME/graph_topology/slogs/SisInf_Topology_error-%A_%a.err
+#SBATCH --output=$HOME/workspace/slogs/SisInf_Topology_output-%A_%a.out
+#SBATCH --error=$HOME/workspace/slogs/SisInf_Topology_error-%A_%a.err
 #SBATCH --account={1}
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user={2}
@@ -90,12 +90,12 @@ module load cuda/12.1
 module load gcc/12.2.0-cuda-12.1
 module load python/3.10.8--gcc--11.3.0
 
-source $HOME/graph_topology/Topology-Graph-Collaborative-Filtering/venv310/bin/activate
+cd $HOME/workspace/Topology-Graph-Collaborative-Filtering
+
+source venv/bin/activate
 
 export LANG="en_US.utf8"
 export LANGUAGE="en_US:en"
-
-cd $HOME/graph_topology/Topology-Graph-Collaborative-Filtering
 
 echo "Run experiments"
 """
