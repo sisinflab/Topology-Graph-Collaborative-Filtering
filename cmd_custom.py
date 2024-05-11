@@ -50,7 +50,7 @@ def main():
 
         if not completed:
             command_line = (
-                f'python start_experiments_cluster.py '
+                f'CUBLAS_WORKSPACE_CONFIG=:4096:8 python start_experiments_cluster.py '
                 f'--dataset={args.dataset} '
                 f'--dataset_id={dataset_id} '
                 f'--strategy={strategy} '
