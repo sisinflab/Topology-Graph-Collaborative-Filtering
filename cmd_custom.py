@@ -85,6 +85,9 @@ def main():
 #SBATCH --qos=normal
 #SBATCH --array=1-{0}
 
+source ~/.bashrc
+set -x
+
 module load gcc/12.2.0-cuda-12.1
 module load python/3.10.8--gcc--11.3.0
 
