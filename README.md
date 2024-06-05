@@ -114,7 +114,7 @@ $ python3 check_scale_free.py
 
 to fit the power-law and exponential functions on the node degree distribution of gowalla. The script will display the plot, and generate the latex code for the plot (used for the paper).
 
-Finally, to reproduce the results for the RQ2 table, you should run the scripts:
+Finally, to reproduce the results for the RQ2 table, you should run the scripts (set the alpha variable within the script accordingly):
 
 ```
 $ python3 regression_rq2.py \
