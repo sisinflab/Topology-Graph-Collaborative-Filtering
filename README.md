@@ -85,16 +85,28 @@ $ python3 generate_characteristics.py \
 
 This will produce the tsv file "characteristics_0_600.tsv" under each dataset folder.
 
-After that, you may want to run the linear regression model on the generated datasets of characteristics/performance metrics. To do so, you should run the following script (with arguments):
+After that, you may want to run the linear regression model on the generated datasets of characteristics/performance metrics, both for RQ1 and RQ2. To do so, you should run the following script (with arguments):
 
 ```
-$ python3 regression.py \
+$ python3 regression_rq1.py \
 --dataset <dataset_name> \
 --start_id <start_dataset_id> \
 --end_id <end_dataset_id> \
 --characteristics <list_of_characteristics>
 ```
 This will produce the tsv files "regression_<metric>_0_600.tsv", one for each metric, under the dataset folder.
+
+For RQ2 it is pretty much the same:
+
+```
+$ python3 regression_rq2.py \
+--dataset <dataset_name> \
+--start_id <start_dataset_id> \
+--end_id <end_dataset_id> \
+--characteristics <list_of_characteristics>
+--alpha <alpha_value>
+```
+This will produce the tsv files "regression_<alpha_value>_<metric>_0_600.tsv", one for each metric, under the dataset folder.
 
 We also provide a script to generate the latex tables (only the results parts of the tables, without row and column headers) starting from the results. To do so, you should run the script:
 
