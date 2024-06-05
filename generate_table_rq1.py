@@ -5,8 +5,8 @@ from itertools import product
 path_base = './data'
 
 datasets = ['yelp2018', 'amazon-book', 'gowalla']
-models = ['LightGCN', 'DGCF', 'UltraGCN', 'SVDGCN']
-metrics = ['recall', 'precision']
+models = ['LightGCN', 'DGCF', 'SVDGCN']
+metrics = ['recall']
 
 couples = list(product(models, datasets))
 

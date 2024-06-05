@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 
 datasets = ['gowalla']
-models = ['LightGCN', 'DGCF', 'UltraGCN', 'SVDGCN']
+models = ['SVDGCN']
 metrics = ['recall']
 samplings = []
 

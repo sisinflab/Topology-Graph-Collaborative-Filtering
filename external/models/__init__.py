@@ -16,4 +16,3 @@ for _backend in sys.modules["external"].backend:
         from .lightgcn.LightGCN import LightGCN
         from .dgcf.DGCF import DGCF
         from .svd_gcn import SVDGCN
-        from .ultragcn import UltraGCN

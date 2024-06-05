@@ -23,8 +23,8 @@ results_node = results_node.sample(frac=(1-args.alpha))
 
 results = pd.concat([results_edge, results_node]).sample(frac=1).reset_index(drop=True)
 
-models = ['LightGCN', 'DGCF', 'UltraGCN', 'SVDGCN']
-metrics = ['Recall', 'nDCG']
+models = ['SVDGCN']
+metrics = ['Recall']
 characteristics = args.characteristics
 results[characteristics] = results[characteristics].apply(
         lambda x: (x - x.mean()))
