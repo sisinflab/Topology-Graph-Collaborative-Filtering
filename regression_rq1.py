@@ -11,17 +11,9 @@ parser.add_argument('--dataset', type=str, default='gowalla')
 parser.add_argument('--start_id', type=int, default=0)
 parser.add_argument('--end_id', type=int, default=600)
 parser.add_argument('--characteristics', type=str, nargs='+', default=ACCEPTED_CHARACTERISTICS)
-parser.add_argument('--strategy', type=str, default='edge_dropout')
-parser.add_argument('--alpha', type=int, default=1.0)
 args = parser.parse_args()
 
-results_edge = pd.read_csv(f'data/{args.dataset}/characteristics_{args.start_id}_{args.end_id}_edge_dropout.tsv', sep='\t')
-results_node = pd.read_csv(f'data/{args.dataset}/characteristics_{args.start_id}_{args.end_id}_node_dropout.tsv', sep='\t')
-
-results_edge = results_edge.sample(frac=args.alpha)
-results_node = results_node.sample(frac=(1-args.alpha))
-
-results = pd.concat([results_edge, results_node]).sample(frac=1).reset_index(drop=True)
+results = pd.read_csv(f'data/{args.dataset}/characteristics_{args.start_id}_{args.end_id}.tsv', sep='\t')
 
 models = ['LightGCN', 'DGCF', 'SVDGCN']
 metrics = ['Recall']
@@ -50,5 +42,5 @@ for metric in metrics:
             **fitted_ml.pvalues.rename(lambda x: 'p_'+x).to_dict()
         })
         df = pd.DataFrame.from_dict(models_results)
-        df.to_csv(f'data/{args.dataset}/regression_{args.alpha}_{metric.lower()}_{args.start_id}_{args.end_id}.tsv',
+        df.to_csv(f'data/{args.dataset}/regression_{metric.lower()}_{args.start_id}_{args.end_id}.tsv',
                   sep='\t', index=None)
