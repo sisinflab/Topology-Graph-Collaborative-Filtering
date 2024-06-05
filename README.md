@@ -94,7 +94,7 @@ $ python3 regression_rq1.py \
 --end_id <end_dataset_id> \
 --characteristics <list_of_characteristics>
 ```
-This will produce the tsv files "regression_<metric>_0_600.tsv", one for each metric, under the dataset folder.
+This will produce the tsv files "regression_\<metric\>_0_600.tsv", one for each metric, under the dataset folder.
 
 We also provide a script to generate the latex tables (only the results parts of the tables, without row and column headers) starting from the results. To do so, you should run the script:
 
@@ -124,7 +124,7 @@ $ python3 regression_rq2.py \
 --characteristics <list_of_characteristics>
 --alpha <alpha_value>
 ```
-This will produce the tsv files "regression_<alpha_value>_<metric>_0_600.tsv", one for each metric, under the dataset folder. Then:
+This will produce the tsv files "regression_\<alpha_value\>_\<metric\>_0_600.tsv", one for each metric, under the dataset folder. Then:
 
 ```
 $ python3 generate_table_rq2.py
