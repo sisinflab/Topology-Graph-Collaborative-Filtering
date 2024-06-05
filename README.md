@@ -130,4 +130,4 @@ This will produce the tsv files "regression_\<alpha_value\>_\<metric\>_0_600.tsv
 $ python3 generate_table_rq2.py
 ```
 
-that, similarly to above, will produce one tsv file "table_<alpha>_rq2.tsv" for each alpha value in the folder ```./data/```, as it is unique for all datasets. Again, the latex code contains only result cells, but no row and column headers.
+that, similarly to above, will produce one tsv file "table_\<alpha\>_rq2.tsv" for each alpha value in the folder ```./data/```, as it is unique for all datasets. Again, the latex code contains only result cells, but no row and column headers.
