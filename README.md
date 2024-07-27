@@ -1,6 +1,6 @@
 # Graph-Characteristics
 
-This is the official repository for the paper "_A Novel Evaluation Perspective on GNNs-based Recommender Systems through the Topology of the User-Item Graph_", under review at RecSys 2024 in the Reproducibility track.
+This is the official repository for the paper "_A Novel Evaluation Perspective on GNNs-based Recommender Systems through the Topology of the User-Item Graph_", accepted as a long paper at RecSys 2024 in the Reproducibility track.
 
 This repository is heavily dependent on the framework **Elliot**, so we suggest you refer to the official GitHub [page](https://github.com/sisinflab/elliot) and [documentation](https://elliot.readthedocs.io/en/latest/).
 
